@@ -1,0 +1,13 @@
+name: "CS2 Snap"
+game: "cs2"
+model_path: "models/cs2/yolov8n-cs2.pt"
+classes: ["enemy_head", "enemy_body"]
+aim:
+  confidence: 0.5
+  fov_radius: 220
+  smoothing: 0.18
+  max_speed: 70
+  prediction_strength: 0.62
+  recoil_compensation: 0.06
+  target_zone: "head"
+  triggerbot: true
