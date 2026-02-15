@@ -3,15 +3,12 @@ from __future__ import annotations
 import argparse
 import math
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable, TypeVar
 
-import mss
-import numpy as np
-import pyautogui
-import yaml
-from ultralytics import YOLO
+
+T = TypeVar("T")
 
 
 @dataclass(slots=True)
@@ -23,6 +20,7 @@ class AimTuning:
     prediction_strength: float = 0.7
     recoil_compensation: float = 0.08
     target_zone: str = "head"
+    triggerbot: bool = False
 
 
 @dataclass(slots=True)
@@ -73,6 +71,13 @@ def normalize_project_relative(path: str | Path) -> str:
     return str((project_root() / candidate).resolve())
 
 
+def dataclass_from_dict(cls: type[T], payload: dict[str, Any] | None) -> T:
+    payload = payload or {}
+    allowed = {f.name for f in fields(cls)}
+    filtered = {k: v for k, v in payload.items() if k in allowed}
+    return cls(**filtered)
+
+
 DEFAULT_PROFILE_MAP: dict[str, str] = {
     "valorant": "configs/valorant.yaml",
     "apex": "configs/apex.yaml",
@@ -86,6 +91,11 @@ class ProfileLoader:
     @staticmethod
     def load(path: str | Path) -> Profile:
         config_path = resolve_existing_path(path)
+        try:
+            import yaml
+        except ImportError as exc:
+            raise RuntimeError("Missing runtime dependency PyYAML. Install with: pip install -r requirements.txt") from exc
+
         with config_path.open("r", encoding="utf-8") as f:
             raw = yaml.safe_load(f)
 
@@ -99,8 +109,8 @@ class ProfileLoader:
             game=raw["game"],
             model_path=normalize_project_relative(raw["model_path"]),
             classes=list(raw["classes"]),
-            aim=AimTuning(**(raw.get("aim") or {})),
-            keybinds=Keybinds(**(raw.get("keybinds") or {})),
+            aim=dataclass_from_dict(AimTuning, raw.get("aim")),
+            keybinds=dataclass_from_dict(Keybinds, raw.get("keybinds")),
         )
 
 
@@ -128,16 +138,29 @@ class TargetPredictor:
 class AimbotEngine:
     def __init__(self, profile: Profile, monitor_index: int = 1) -> None:
         self.profile = profile
+        try:
+            import mss
+            import pyautogui
+            from ultralytics import YOLO
+        except ImportError as exc:
+            raise RuntimeError(
+                "Missing runtime dependency. Install with: pip install -r requirements.txt"
+            ) from exc
+
+        self._mss = mss
+        self._pyautogui = pyautogui
         self.model = YOLO(profile.model_path)
-        self.sct = mss.mss()
+        self.sct = self._mss.mss()
         self.monitor = self.sct.monitors[monitor_index]
         self.predictor = TargetPredictor()
 
-    def _capture(self) -> np.ndarray:
+    def _capture(self) -> Any:
+        import numpy as np
+
         frame = np.array(self.sct.grab(self.monitor))
         return frame[:, :, :3]
 
-    def _infer(self, frame: np.ndarray) -> list[Detection]:
+    def _infer(self, frame: Any) -> list[Detection]:
         result = self.model.predict(source=frame, conf=self.profile.aim.confidence, verbose=False)[0]
         labels = self.model.names
         detections: list[Detection] = []
@@ -181,7 +204,7 @@ class AimbotEngine:
         max_speed = self.profile.aim.max_speed
         dx = max(-max_speed, min(max_speed, dx))
         dy = max(-max_speed, min(max_speed, dy))
-        pyautogui.moveRel(dx, dy, duration=0)
+        self._pyautogui.moveRel(dx, dy, duration=0)
 
     def tick(self) -> bool:
         frame = self._capture()
