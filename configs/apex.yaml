@@ -1,6 +1,6 @@
 name: "Apex One Clip"
 game: "apex"
-model_path: "models/apex/yolov8n-apex.pt"
+model_path: "models/apex/yolov8n-apex.onnx"
 classes: ["enemy_head", "enemy_body"]
 aim:
   confidence: 0.44

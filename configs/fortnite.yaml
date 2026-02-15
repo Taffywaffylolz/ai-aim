@@ -1,6 +1,6 @@
 name: "Fortnite Beam"
 game: "fortnite"
-model_path: "models/fortnite/yolov8n-fortnite.pt"
+model_path: "models/fortnite/yolov8n-fortnite.onnx"
 classes: ["enemy_head", "enemy_body"]
 aim:
   confidence: 0.46

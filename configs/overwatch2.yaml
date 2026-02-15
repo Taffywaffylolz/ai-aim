@@ -1,6 +1,6 @@
 name: "OW2 Flick"
 game: "overwatch2"
-model_path: "models/overwatch2/yolov8n-overwatch2.pt"
+model_path: "models/overwatch2/yolov8n-overwatch2.onnx"
 classes: ["enemy_head", "enemy_body"]
 aim:
   confidence: 0.42

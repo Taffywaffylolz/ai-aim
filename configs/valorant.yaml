@@ -1,6 +1,6 @@
 name: "Neon Vandal Tap"
 game: "valorant"
-model_path: "models/valorant/yolov8n-valorant.pt"
+model_path: "models/valorant/yolov8n-valorant.onnx"
 classes: ["enemy_head", "enemy_body"]
 aim:
   confidence: 0.48

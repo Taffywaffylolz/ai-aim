@@ -1,3 +1,3 @@
 # fortnite model
 
-Place your trained YOLOv8 weights here, matching the filename referenced in configs/fortnite.yaml.
+Place your ONNX model here using the filename from configs/fortnite.yaml.
