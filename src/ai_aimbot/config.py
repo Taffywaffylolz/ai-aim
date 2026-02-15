@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 import yaml
 
@@ -36,12 +35,38 @@ class Profile:
     keybinds: Keybinds = field(default_factory=Keybinds)
 
 
+def _project_root() -> Path:
+    # src/ai_aimbot/config.py -> repository root
+    return Path(__file__).resolve().parents[2]
+
+
+def _resolve_existing_path(path: str | Path) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute() and candidate.exists():
+        return candidate
+
+    probes = [candidate, _project_root() / candidate]
+    for probe in probes:
+        if probe.exists():
+            return probe
+
+    attempted = ", ".join(str(p) for p in probes)
+    raise FileNotFoundError(f"Could not locate path '{path}'. Tried: {attempted}")
+
+
+def _normalize_project_relative(path: str | Path) -> str:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return str(candidate)
+    return str((_project_root() / candidate).resolve())
+
+
 class ProfileLoader:
     """Loads game profiles and provides a validated Profile object."""
 
     @staticmethod
     def load(path: str | Path) -> Profile:
-        path = Path(path)
+        path = _resolve_existing_path(path)
         with path.open("r", encoding="utf-8") as f:
             raw = yaml.safe_load(f)
 
@@ -53,10 +78,12 @@ class ProfileLoader:
         aim = AimTuning(**(raw.get("aim") or {}))
         keybinds = Keybinds(**(raw.get("keybinds") or {}))
 
+        model_path = _normalize_project_relative(raw["model_path"])
+
         return Profile(
             name=raw["name"],
             game=raw["game"],
-            model_path=raw["model_path"],
+            model_path=model_path,
             classes=list(raw["classes"]),
             aim=aim,
             keybinds=keybinds,
