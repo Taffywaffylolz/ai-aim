@@ -12,7 +12,9 @@ A configurable YOLOv8-based aim assistant framework with game-specific profiles,
 - Neon purple ImGui theme preset.
 - CLI entry point: `ai-aimbot`.
 
-## Quick start
+## How to run the app
+
+### 1) Create and activate a virtual environment
 
 ```bash
 python -m venv .venv
@@ -20,23 +22,45 @@ source .venv/bin/activate
 pip install -e .[dev]
 ```
 
-Populate model weights:
+### 2) Populate model weights
+
+This copies a base YOLOv8 model into each game folder so every built-in profile resolves to an existing `.pt` file.
 
 ```bash
 python scripts/bootstrap_models.py
 ```
 
-Run with a profile:
+### 3) Run with a built-in profile
 
 ```bash
 ai-aimbot --profile valorant --monitor 1 --fps 120
 ```
 
-or point directly to a YAML profile:
+### 4) Or run with a custom YAML profile path
 
 ```bash
 ai-aimbot --profile configs/cs2.yaml
 ```
+
+### 5) Useful runtime flags
+
+- `--profile`: built-in profile name (`valorant`, `apex`, `fortnite`, `cs2`, `overwatch2`) or path to a YAML file.
+- `--monitor`: `mss` monitor index (default `1`).
+- `--fps`: main loop target FPS (default `120`).
+
+### Troubleshooting
+
+- If `ai-aimbot` is not found, run it as a module:
+
+  ```bash
+  PYTHONPATH=src python -m ai_aimbot.main --profile valorant
+  ```
+
+- If dependencies fail to install, verify you have access to a Python package index and try:
+
+  ```bash
+  pip install -e .
+  ```
 
 ## Profile format
 
