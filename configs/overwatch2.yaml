@@ -1,0 +1,13 @@
+name: "OW2 Flick"
+game: "overwatch2"
+model_path: "models/overwatch2/yolov8n-overwatch2.onnx"
+classes: ["enemy_head", "enemy_body"]
+aim:
+  confidence: 0.42
+  fov_radius: 320
+  smoothing: 0.23
+  max_speed: 65
+  prediction_strength: 0.88
+  recoil_compensation: 0.02
+  target_zone: "head"
+  triggerbot: false

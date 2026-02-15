@@ -1,0 +1,13 @@
+name: "Fortnite Beam"
+game: "fortnite"
+model_path: "models/fortnite/yolov8n-fortnite.onnx"
+classes: ["enemy_head", "enemy_body"]
+aim:
+  confidence: 0.46
+  fov_radius: 300
+  smoothing: 0.24
+  max_speed: 58
+  prediction_strength: 0.78
+  recoil_compensation: 0.07
+  target_zone: "head"
+  triggerbot: false

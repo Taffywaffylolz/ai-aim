@@ -1,0 +1,13 @@
+name: "Apex One Clip"
+game: "apex"
+model_path: "models/apex/yolov8n-apex.onnx"
+classes: ["enemy_head", "enemy_body"]
+aim:
+  confidence: 0.44
+  fov_radius: 280
+  smoothing: 0.22
+  max_speed: 62
+  prediction_strength: 0.82
+  recoil_compensation: 0.11
+  target_zone: "head"
+  triggerbot: false

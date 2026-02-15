@@ -1,0 +1,17 @@
+name: "Neon Vandal Tap"
+game: "valorant"
+model_path: "models/valorant/yolov8n-valorant.onnx"
+classes: ["enemy_head", "enemy_body"]
+aim:
+  confidence: 0.48
+  fov_radius: 230
+  smoothing: 0.27
+  max_speed: 52
+  prediction_strength: 0.66
+  recoil_compensation: 0.05
+  target_zone: "head"
+  triggerbot: true
+keybinds:
+  hold_to_aim: "alt"
+  toggle_on: "f8"
+  panic_off: "f12"
