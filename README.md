@@ -53,7 +53,15 @@ ai-aimbot --profile configs/cs2.yaml
 - If `ai-aimbot` is not found, run it as a module:
 
   ```bash
-  PYTHONPATH=src python -m ai_aimbot.main --profile valorant
+  PYTHONPATH=src python -m ai_aimbot --profile valorant
+  ```
+
+- If you see `ImportError: attempted relative import with no known parent package` when running `python main.py`, run from the repo root with one of these:
+
+  ```bash
+  python -m ai_aimbot --profile valorant
+  # or
+  PYTHONPATH=src python src/ai_aimbot/main.py --profile valorant
   ```
 
 - If dependencies fail to install, verify you have access to a Python package index and try:

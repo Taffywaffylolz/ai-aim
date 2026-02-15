@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import sys
 import time
+from pathlib import Path
 
-from .config import ProfileLoader, list_profiles
-from .engine import AimbotEngine
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from ai_aimbot.config import ProfileLoader, list_profiles
+from ai_aimbot.engine import AimbotEngine
 
 
 def parse_args() -> argparse.Namespace:
